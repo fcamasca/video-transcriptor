@@ -1,0 +1,4 @@
+openai-whisper
+pyannote.audio
+hypothesis
+pytest
