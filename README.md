@@ -52,17 +52,6 @@ Cada componente es independiente y testeable, lo que permite:
 
 ------------------------------------------------------------------------
 
-## 📌 Descripción
-
-Transcripción local de archivos de video con identificación de
-hablantes. Sin APIs externas, sin envío de datos a la nube.
-
-Extrae el audio con **ffmpeg**, transcribe con **Whisper** (OpenAI) y
-opcionalmente diariza con **pyannote.audio**. El resultado es un archivo
-`.txt` por video con timestamps y etiquetas de hablante.
-
-------------------------------------------------------------------------
-
 ## Instalación
 
 ### Opción A --- Setup automático (recomendado)
@@ -151,17 +140,37 @@ Estado: `TRANSCRIPCION_SIN_DIARIZACION`
 python main.py [opciones]
 ```
 
+### Ejemplos
+
+``` bash
+# Uso básico con defaults
+python main.py
+
+# Especificar carpetas y modelo más preciso
+python main.py --input-dir Reuniones/ --output-dir Salida/ --whisper-model small
+
+# Transcribir en inglés sin diarización
+python main.py --language en --diarization false
+
+# Sobreescribir transcripciones existentes y guardar log
+python main.py --duplicate-policy overwrite --log-file transcriptor.log
+```
+
+### Formatos de video soportados
+
+`.mp4`, `.mkv`, `.avi`, `.mov`, `.webm`
+
 ### Parámetros
 
-  Parámetro              Default            Descripción
-  ---------------------- ------------------ ---------------------------------------
-  `--input-dir`          `Videos/`          Carpeta con los archivos de video
-  `--output-dir`         `Transcripcion/`   Carpeta de salida
-  `--language`           `es`               Idioma
-  `--diarization`        `true`             Habilitar identificación de hablantes
-  `--duplicate-policy`   `skip`             Manejo de duplicados
-  `--whisper-model`      `base`             Modelo Whisper
-  `--log-file`           ---                Ruta de log
+| Parámetro | Default | Valores posibles | Descripción |
+|---|---|---|---|
+| `--input-dir` | `Videos/` | cualquier ruta | Carpeta con los archivos de video |
+| `--output-dir` | `Transcripcion/` | cualquier ruta | Carpeta de salida |
+| `--language` | `es` | `es`, `en` | Idioma para la transcripción |
+| `--diarization` | `true` | `true`, `false` | Habilitar identificación de hablantes |
+| `--duplicate-policy` | `skip` | `skip`, `overwrite` | Manejo de archivos ya transcritos |
+| `--whisper-model` | `base` | `tiny`, `base`, `small`, `medium`, `large` | Modelo Whisper a utilizar |
+| `--log-file` | — | cualquier ruta | Ruta opcional al archivo de log |
 
 
 ------------------------------------------------------------------------
@@ -174,13 +183,13 @@ python main.py [opciones]
 
 ## Estados posibles
 
-  Estado                          Significado
-  ------------------------------- -----------------------------------------
-  OK                              Transcripción y diarización completadas
-  TRANSCRIPCION_SIN_DIARIZACION   Sin diarización
-  SIN_AUDIO                       Sin audio
-  ERROR_EXTRACCION_AUDIO          Error ffmpeg
-  ERROR_TRANSCRIPCION             Error Whisper
+| Estado | Cuándo ocurre | Significado |
+|---|---|---|
+| `OK` | Transcripción y diarización completadas | Todo funcionó correctamente |
+| `TRANSCRIPCION_SIN_DIARIZACION` | Token ausente, inválido, o error en pyannote | Transcripción disponible, sin identificación de hablantes |
+| `SIN_AUDIO` | El video no contiene pista de audio | Se genera el archivo de salida indicando el estado |
+| `ERROR_EXTRACCION_AUDIO` | ffmpeg falló al procesar el archivo | No se genera transcripción |
+| `ERROR_TRANSCRIPCION` | Whisper falló o el audio es demasiado corto | No se genera transcripción |
 
 ------------------------------------------------------------------------
 
