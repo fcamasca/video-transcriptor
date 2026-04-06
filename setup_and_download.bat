@@ -34,6 +34,7 @@ echo Instalando dependencias Python...
 py -m pip install sympy --timeout 120
 py -m pip install openai-whisper --timeout 120
 py -m pip install pyannote.audio --timeout 120
+py -m pip install soundfile --timeout 120
 py -m pip install hypothesis pytest --timeout 120
 
 REM Descargar modelo Whisper base
