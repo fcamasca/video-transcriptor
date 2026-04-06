@@ -163,6 +163,7 @@ python main.py [opciones]
   `--whisper-model`      `base`             Modelo Whisper
   `--log-file`           ---                Ruta de log
 
+
 ------------------------------------------------------------------------
 
 ## Ejemplo de salida
